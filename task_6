@@ -1,0 +1,644 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.Stack;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Task6 {
+    //Задание 1
+    public static String hiddenAnagram(String sentence, String word) {
+
+        // Приводим предложение и слово к нижнему регистру и удаляем все не-буквенные символы
+    String formattedSentence = sentence.toLowerCase().replaceAll("[^a-z]", "");
+    String formattedWord = word.toLowerCase().replaceAll("[^a-z]", "");
+
+    // Перебираем все возможные подстроки предложения, начиная с каждой буквы
+    for (int i = 0; i <= formattedSentence.length() - formattedWord.length(); i++) {
+
+        // Получаем текущую подстроку
+        String substring = formattedSentence.substring(i, i + formattedWord.length());
+
+        // Если подстрока является анаграммой исходного слова, возвращаем ее
+        if (isAnagram(substring, formattedWord)) {
+            return substring;
+        }
+    }
+
+    // Если анаграмма не найдена, возвращаем "notfound"
+    return "notfound";
+}
+
+    private static boolean isAnagram(String str1, String str2) {
+
+        // Проверяем, содержат ли оба слова одинаковые символы
+        List<Character> chars1 = getCharacterList(str1);
+        List<Character> chars2 = getCharacterList(str2);
+
+        return chars1.equals(chars2);
+    }
+
+    private static List<Character> getCharacterList(String str) {
+
+        // Преобразуем строку в список символов и сортируем его
+        List<Character> characters = new ArrayList<>(); // Создаем новый список символов
+        for (char c : str.toCharArray()) { // Преобразуем строку в список символов
+            characters.add(c);
+        }
+        characters.sort(Character::compareTo);// Сортируем список символов по возрастанию
+
+        return characters;// Возвращаем отсортированный список символов
+    }
+
+    //Задание 2
+    public static String[] collect(String word, int n) {
+
+        // Проверяем, достаточна ли длина слова для создания срезов длиной n
+        if (word.length() < n) {
+            return new String[0];//Если длина слова меньше n, возвращаем пустой массив
+        }
+
+        // Вычисляем количество возможных срезов длиной n в данном слове
+        int numSlices = word.length() - n + 1;
+        String[] slices = new String[numSlices];// Создаем массив для хранения срезов
+
+        // Заполняем массив срезами длиной n
+        for (int i = 0; i < numSlices; i++) {
+            slices[i] = word.substring(i, i + n);
+        }
+
+        // Сортируем массив лексикографически  (в алфавитном порядке)
+        Arrays.sort(slices);
+
+        return slices;// Возвращаем отсортированный массив срезов
+    }
+
+    //Задание 3
+    public static String nicoCipher(String message, String key) {
+
+        // Создаем цифровой ключ, сопоставляя каждой букве позицию в отсортированном ключе
+        int[] numericKey = createNumericKey(key);
+
+        // Вычисляем количество столбцов на основе длины ключа
+        int numColumns = key.length();
+
+        // Добавляем пробелы в сообщение, чтобы его длина стала кратной количеству столбцов
+        message = padMessage(message, numColumns);
+
+        // Создаем список для хранения столбцов зашифрованного сообщения
+        List<String> columns = new ArrayList<>();
+
+        // Извлекаем столбцы из сообщения в соответствии с цифровым ключом
+        for (int i = 1; i <= numColumns; i++) {
+            StringBuilder column = new StringBuilder();
+
+            //Извлекаем символы столбца из сообщения
+            for (int j = 0; j < message.length() / numColumns; j++) {
+                int index = numericKey[i-1] - 1;// Вычисляем индекс символа в сообщении на основе цифрового ключа
+                column.append(message.charAt(index));// Добавляем символ в столбец
+                message = message.substring(0, index) + message.substring(index + 1); // Удаляем уже использованный символ из сообщения
+            }
+            columns.add(column.toString());// Добавляем столбец в список столбцов
+        }
+
+        // Строим закодированное сообщение, объединяя символы из столбцов по порядку
+        StringBuilder encodedMessage = new StringBuilder();// Создаем StringBuilder для хранения закодированного сообщения
+
+        // Объединяем символы из столбцов по порядку
+        for (int i = 0; i < message.length() / numColumns; i++) {
+            for (String column : columns) {// Перебираем столбцы
+                if (i < column.length()) {// Если текущий индекс меньше длины столбца
+                    encodedMessage.append(column.charAt(i));// Добавляем символ из текущего столбца в закодированное сообщение
+                } else {
+                    encodedMessage.append(' '); // Добавляем пробел, если достигнут конец столбца
+                }
+            }
+        }
+
+        return encodedMessage.toString();// Возвращаем закодированное сообщение
+    }
+
+    private static int[] createNumericKey(String key) {
+        // Создаем цифровой ключ, сопоставляя каждой букве позицию в отсортированном ключе
+        int[] numericKey = new int[key.length()];// Создаем массив целых чисел для хранения цифрового ключа
+        char[] sortedKey = key.toCharArray();// Преобразуем ключ в массив символов
+        Arrays.sort(sortedKey);// Сортируем символы ключа по возрастанию
+
+        // Присваиваем каждой букве позицию в отсортированном ключе
+        for (int i = 0; i < key.length(); i++) {
+            char letter = key.charAt(i);// Получаем текущую букву
+            int index = Arrays.binarySearch(sortedKey, letter) + 1;// Ищем позицию буквы в отсортированном ключе
+            numericKey[i] = index;// Присваиваем позицию буквы в цифровом ключе
+        }
+        return numericKey; // Возвращаем цифровой ключ
+    }
+
+    private static String padMessage(String message, int numColumns) {
+
+        // Добавляем пробелы в сообщение, чтобы его длина стала кратной количеству столбцов
+        int remainder = message.length() % numColumns;// Вычисляем остаток от деления длины сообщения на количество столбцов
+        if (remainder != 0) {// Если остаток не равен нулю, то сообщение не кратно количеству столбцов
+            int numSpacesToAdd = numColumns - remainder;// Вычисляем количество пробелов, которые нужно добавить
+            StringBuilder paddedMessage = new StringBuilder(message);// Создаем новый StringBuilder на основе исходного сообщения
+            for (int i = 0; i < numSpacesToAdd; i++) {
+                paddedMessage.append(' ');// Добавляем пробелы в конец сообщения
+            }
+            message = paddedMessage.toString();// Преобразуем StringBuilder обратно в строку
+        }
+        return message;// Возвращаем сообщение с добавленными пробелами
+    }
+
+    //Задание 4
+    public static int[] twoProduct(int[] arr, int n) { // Создание нового объекта типа HashMap для хранения пар чисел
+        Map<Integer, Integer> map = new HashMap<>();
+// Итерация по элементам массива arr
+        for (int i = 0; i < arr.length; i++) {
+            int current = arr[i];// Текущий элемент массива
+            int complement = n / current;// Вычисление дополнения текущего элемента
+// Проверка, содержит ли map значение, равное дополнению
+            if (map.containsKey(complement)) {
+                int complementIndex = map.get(complement);// Индекс элемента с дополнением
+                return new int[]{arr[complementIndex], current};// Возвращение массива из двух чисел - текущего элемента и его дополнения
+            }
+
+            map.put(current, i);// Добавление текущего элемента в map
+        }
+
+        return new int[]{};// Возвращение пустого массива, если пара чисел не была найдена
+    }
+
+    //Задание 5
+    public static int[] isExact(int n) {// Создание массива result с исходными значениями n и 0
+        int[] result = {n, 0};
+        // Проверка, является ли n нулем или единицей
+        if (n == 0 || n == 1) { // Если n равно 0 или 1, то факториал равен 1
+
+            // Факториал 0 и 1 равен 1
+            result[1] = 1;
+            return result;
+        }
+
+        int factorial = 1;// Переменная для хранения значения факториала
+        int i = 2;// Переменная для итерации
+        // Пока факториал меньше n, увеличиваем его, увеличивая i
+        while (factorial < n) {
+            factorial *= i;
+            i++;
+        }
+
+        // Проверяем, равен ли факториал n
+        if (factorial == n) {
+            result[1] = i - 1;// Записываем значение i - 1 в result[1]
+            return result;
+        }
+
+        return new int[]{};// Возвращаем пустой массив, если факториал не равен n
+    }
+
+    //Задание 6
+    public static String fractions(String decimal) {
+        // Ищем повторяющийся блок в десятичной дроби
+        String pattern = "\\((\\d+)";// Шаблон для поиска повторяющегося блока
+        Pattern r = Pattern.compile(pattern); // Создаем объект Pattern
+        Matcher m = r.matcher(decimal);// Создаем объект Matcher и ищем совпадения в десятичной дроби
+        String repeatingPart = "";
+
+        if (m.find()) {
+            repeatingPart = m.group(1);// Получаем повторяющийся блок
+        }
+
+        // Определяем количество цифр в повторяющемся блоке
+        int repeatingPartLength = repeatingPart.length();
+
+        // Создаем числитель путем вычитания дробной части из десятичной части
+        String fractionPart = decimal.replace(".", "").replace("(", "").replace(")", "");// Удаляем точку и скобки
+        int fractionPartLength = 0;
+        int numerator = Integer.parseInt(fractionPart) - Integer.parseInt(fractionPart.substring(0, fractionPartLength));
+
+        // Создаем знаменатель
+        int denominator = (int) (Math.pow(10, fractionPart.length()) - Math.pow(10, fractionPart.length() - repeatingPartLength));
+
+        // Упрощаем дробь
+        int gcd = greatestCommonDivisor(numerator, denominator);// Находим наибольший общий делитель
+        numerator /= gcd; // Делим числитель на НОД
+        denominator /= gcd; // Делим знаменатель на НОД
+
+        return numerator + "/" + denominator;// Возвращаем дробь в формате "числитель/знаменатель"
+    }
+
+    // Вспомогательный метод для нахождения наибольшего общего делителя
+    private static int greatestCommonDivisor(int a, int b) {
+        if (b == 0) {
+            return a;
+        } else {
+            return greatestCommonDivisor(b, a % b);
+        }
+    }
+
+    //Задание 7
+    public static String pilish_string(String txt) {
+        // Проверяем пустую строку
+        if (txt.isEmpty()) {
+            return "";
+        }
+
+        // Получаем цифры числа Пи
+        String piDigits = "314159265358979";
+
+        StringBuilder result = new StringBuilder();// Результирующая строка
+        int index = 0;// Индекс для прохода по txt
+
+
+        while (index < txt.length()) {
+
+            // Получаем текущую цифру Пи
+            int digit = Character.getNumericValue(piDigits.charAt(result.length()));
+
+            // Обрезаем строку, чтобы оставить только необходимое количество символов
+            String word = txt.substring(index, Math.min(index + digit, txt.length()));
+
+            // Повторяем последний символ, пока длина слова не совпадет с цифрой Пи
+            while (word.length() < digit) {
+                word += word.charAt(word.length() - 1);
+            }
+
+            result.append(word).append(" ");// Добавляем слово в результат с пробелом
+
+            index += digit;// Увеличиваем индекс на значение текущей цифры Пи
+        }
+
+        // Удаляем последний лишний пробел
+        return result.toString().trim();
+    }
+
+    //Здание 8
+    public static int evaluateExpression(String expression) {
+        try {
+            // Удаляем все пробелы из выражения
+            String expressionWithoutSpaces = expression.replaceAll("\\s+", "");
+
+            // Стек для хранения операндов
+            Stack<Integer> operands = new Stack<>();
+
+            // Стек для хранения операций
+            Stack<Character> operators = new Stack<>();
+
+            // Проходимся по каждому символу в выражении
+            for (int i = 0; i < expressionWithoutSpaces.length(); i++) {
+                char ch = expressionWithoutSpaces.charAt(i);
+
+                // Если текущий символ - цифра, добавляем ее в стек операндов
+                if (Character.isDigit(ch)) {
+                    StringBuilder operand = new StringBuilder();
+
+                    // Считываем все цифры, чтобы получить полное число
+                    while (i < expressionWithoutSpaces.length() && Character.isDigit(expressionWithoutSpaces.charAt(i))) {
+                        operand.append(expressionWithoutSpaces.charAt(i));
+                        i++;
+                    }
+
+                    // Преобразуем число из строки в целое число
+                    int num = Integer.parseInt(operand.toString());
+
+                    // Добавляем число в стек операндов
+                    operands.push(num);
+
+                    // Уменьшаем индекс, чтобы скорректировать его на 1,
+                    // т.к. он будет увеличен в конце цикла
+                    i--;
+                } else if (ch == '(') {
+                    // Если текущий символ - открывающая скобка,
+                    // добавляем ее в стек операций
+                    operators.push(ch);
+                } else if (ch == ')') {
+                    // Если текущий символ - закрывающая скобка,
+                    // выполняем операции до открывающей скобки
+                    while (!operators.isEmpty() && operators.peek() != '(') {
+                        performOperation(operands, operators);
+                    }
+
+                    // Удаляем открывающую скобку
+                    operators.pop();
+                } else if (isOperator(ch)) {
+                    // Если текущий символ - оператор
+                    // и его приоритет ниже или равен приоритету последнего оператора
+                    // в стеке операций, выполняем последнюю операцию
+                    while (!operators.isEmpty() && operators.peek() != '(' && hasLowerOrEqualPriority(ch, operators.peek())) {
+                        performOperation(operands, operators);
+                    }
+
+                    // Добавляем текущий оператор в стек операций
+                    operators.push(ch);
+                }
+            }
+
+            // Выполняем оставшиеся операции в стеке операций
+            while (!operators.isEmpty()) {
+                performOperation(operands, operators);
+            }
+
+            // Возвращаем результат
+            return operands.pop();
+        } catch (Exception e) {
+            // Обрабатываем ошибку
+            System.out.println("Ошибка вычисления выражения: " + e.getMessage());
+            return 0; // Или любое другое значение, которое указывает на ошибку
+        }
+    }
+
+    private static boolean isOperator(char ch) {
+        return ch == '+' || ch == '-' || ch == '*' || ch == '/';
+    }
+
+    private static boolean hasLowerOrEqualPriority(char op1, char op2) {
+        if ((op1 == '*' || op1 == '/') && (op2 == '+' || op2 == '-'))
+            return true;
+        return false;
+    }
+
+    private static void performOperation(Stack<Integer> operands, Stack<Character> operators) {
+        int num2 = operands.pop();
+        int num1 = operands.pop();
+        char operator = operators.pop();
+
+        // Выполняем операцию в зависимости от оператора
+        int result = 0;
+        switch (operator) {
+            case '+':
+                result = num1 + num2;
+                break;
+            case '-':
+                result = num1 - num2;
+                break;
+            case '*':
+                result = num1 * num2;
+                break;
+            case '/':
+                // Обрабатываем деление на ноль
+                if (num2 == 0) {
+                    throw new ArithmeticException("Деление на ноль");
+                }
+                result = num1 / num2;
+                break;
+        }
+
+        // Добавляем результат обратно в стек операндов
+        operands.push(result);
+    }
+
+    //Задание 9
+    public static String isValid(String str) {
+        // Создаем отображение для подсчета частоты символов
+        Map<Character, Integer> frequencyMap = new HashMap<>();
+
+        // Подсчитываем частоту каждого символа в строке
+        for (char ch : str.toCharArray()) {
+            frequencyMap.put(ch, frequencyMap.getOrDefault(ch, 0) + 1);
+        }
+
+        // Проверяем, сколько различных частот встречаются в отображении
+        int distinctFrequencies = 0;
+        int minFrequency = Integer.MAX_VALUE;
+        int maxFrequency = Integer.MIN_VALUE;
+
+        for (int frequency : frequencyMap.values()) {
+            if (frequency > 0) {
+                distinctFrequencies++;
+                minFrequency = Math.min(minFrequency, frequency);
+                maxFrequency = Math.max(maxFrequency, frequency);
+            }
+        }
+
+        // Определяем, является ли строка действительной
+        if (distinctFrequencies == 1) {
+            // Если все символы имеют одинаковую частоту
+            return "YES";
+        } else if (distinctFrequencies == 2) {
+            // Если две разные частоты и разница между ними равна 1,
+            // то можно удалить один символ и сделать строку действительной
+            int countMinFrequency = 0;
+            int countMaxFrequency = 0;
+
+            for (int frequency : frequencyMap.values()) {
+                if (frequency == minFrequency) {
+                    countMinFrequency++;
+                } else if (frequency == maxFrequency) {
+                    countMaxFrequency++;
+                }
+            }
+
+            if ((countMinFrequency == 1 && minFrequency == 1) || (countMaxFrequency == 1 && maxFrequency - minFrequency == 1)) {
+                return "YES";
+            }
+        }
+
+        // Если не выполняется ни одно из условий, то строка недействительна
+        return "NO";
+    }
+
+    //Задание 10
+    public static String findLCS(String str01, String str02) {
+        int m = str01.length();
+        int n = str02.length();
+
+        // Создаем таблицу для хранения длин наибольших общих подпоследовательностей
+        int[][] dp = new int[m + 1][n + 1];
+
+        // Заполняем таблицу значениями
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (str01.charAt(i - 1) == str02.charAt(j - 1))
+                    // Если символы совпадают, увеличиваем длину наибольшей общей подпоследовательности
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                else // Если символы не совпадают, выбираем максимум из значений двух предыдущих ячеек
+                    dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
+            }
+        }
+
+        // Восстанавливаем наибольшую общую подпоследовательность
+        StringBuilder lcs = new StringBuilder();
+        int i = m, j = n;
+        while (i > 0 && j > 0) {
+            if (str01.charAt(i - 1) == str02.charAt(j - 1)) {
+                // Если символы совпадают, добавляем его к результату и переходим к следующим символам
+                lcs.insert(0, str01.charAt(i - 1));
+                i--;
+                j--;
+            } else if (dp[i][j - 1] > dp[i - 1][j]) {
+                // Если значение в левой ячейке больше, двигаемся влево
+                j--;
+            } else {
+                // Если значение в верхней ячейке больше или равно, двигаемся вверх
+                i--;
+            }
+        }
+
+        return lcs.toString();
+    }
+
+     public static void main (String[] args) {
+        //Задание 1
+         String sentence1 = "My world evolves in a beautiful space called Tesh.";
+         String word1 = "sworn love lived";
+         System.out.println(hiddenAnagram(sentence1, word1)); // worldevolvesin
+
+         String sentence2 = "An old west action hero actor";
+         String word2 = "Clint Eastwood";
+         System.out.println(hiddenAnagram(sentence2, word2)); // noldwestactio
+
+         String sentence3 = "Mr. Mojo Rising could be a song title";
+         String word3 = "Jim Morrison";
+         System.out.println(hiddenAnagram(sentence3, word3)); // mrmojorisin
+
+         String sentence4 = "Banana? margaritas";
+         String word4 = "ANAGRAM";
+         System.out.println(hiddenAnagram(sentence4, word4)); // anamarg
+
+         String sentence5 = "D  e b90it->?$ (c)a r...d,,#~";
+         String word5 = "bad credit";
+         System.out.println(hiddenAnagram(sentence5, word5)); // debitcard
+
+         String sentence6 = "Bright is the moon";
+         String word6 = "Bongo mirth";
+         System.out.println(hiddenAnagram(sentence6, word6)); // notfound
+
+         //Задание 2
+         word1 = "intercontinentalisationalism";
+         int n1 = 6;
+         System.out.println(Arrays.toString(collect(word1, n1))); // ["ationa", "interc", "ntalis", "ontine"]
+
+         word2 = "strengths";
+         int n2 = 3;
+         System.out.println(Arrays.toString(collect(word2, n2))); // ["eng", "str", "ths"]
+
+         word3 = "pneumonoultramicroscopicsilicovolcanoconiosis";
+         int n3 = 15;
+         System.out.println(Arrays.toString(collect(word3, n3))); // ["croscopicsilico", "pneumonoultrami", "volcanoconiosis"]
+
+         //Задание 3
+         String message1 = "myworldevolvesinhers";
+         String key1 = "tesh";
+         System.out.println(nicoCipher(message1, key1)); // "yowmledrovlvsnieesrh"
+
+         String message2 = "andiloveherso";
+         String key2 = "tesha";
+         System.out.println(nicoCipher(message2, key2)); // "lnidaevheo s or"
+
+         String message3 = "mubashirhassan";
+         String key3 = "crazy";
+         System.out.println(nicoCipher(message3, key3)); // "bmusarhiahass n"
+
+         String message4 = "edabitisamazing";
+         String key4 = "matt";
+         System.out.println(nicoCipher(message4, key4)); // "deabtiismaaznig "
+
+         String message5 = "iloveher";
+         String key5 = "612345";
+         System.out.println(nicoCipher(message5, key5)); // "lovehir    e"
+
+         //Задание 4
+         int[] arr1 = {1, 2, 3, 9, 4, 5, 15};
+         n1 = 45;
+         int[] result1 = twoProduct(arr1, n1);
+         System.out.println(Arrays.toString(result1)); // [9, 5]
+
+         int[] arr2 = {1, 2, 3, 9, 4, 15, 3, 5};
+         n2 = 45;
+         int[] result2 = twoProduct(arr2, n2);
+         System.out.println(Arrays.toString(result2)); // [3, 15]
+
+         int[] arr3 = {1, 2, -1, 4, 5, 6, 10, 7};
+         n3 = 20;
+         int[] result3 = twoProduct(arr3, n3);
+         System.out.println(Arrays.toString(result3)); // [4, 5]
+
+         int[] arr4 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+         int n4 = 10;
+         int[] result4 = twoProduct(arr4, n4);
+         System.out.println(Arrays.toString(result4)); // [2, 5]
+
+         int[] arr5 = {100, 12, 4, 1, 2};
+         int n5 = 15;
+         int[] result5 = twoProduct(arr5, n5);
+         System.out.println(Arrays.toString(result5)); // []
+
+         //Задание 5
+         result1 = isExact(6);
+         System.out.println(Arrays.toString(result1)); // [6, 3]
+
+         result2 = isExact(24);
+         System.out.println(Arrays.toString(result2)); // [24, 4]
+
+         result3 = isExact(125);
+         System.out.println(Arrays.toString(result3)); // []
+
+         result4 = isExact(720);
+         System.out.println(Arrays.toString(result4)); // [720, 6]
+
+         result5 = isExact(1024);
+         System.out.println(Arrays.toString(result5)); // []
+
+         int[] result6 = isExact(40320);
+         System.out.println(Arrays.toString(result6)); // [40320, 8]
+
+         //Задание 6
+         String res1 = fractions("0.(6)");
+         System.out.println(res1); // 2/3
+
+         String res2 = fractions("1.(1)");
+         System.out.println(res2); // 10/9
+
+         String res3 = fractions("3.(142857)");
+         System.out.println(res3); // 22/7
+
+         String res4 = fractions("0.19(2367)");
+         System.out.println(res4); // 5343/27775
+
+         String res5 = fractions("0.1097(3)");
+         System.out.println(res5); // 823/7500
+
+         //Задание 7
+         String result001 = pilish_string("33314444");
+         System.out.println(result001); // 333 1 4444
+
+         String result002 = pilish_string("TOP");
+         System.out.println(result002); // TOP
+
+         String result003 = pilish_string("X");
+         System.out.println(result003); // XXX
+
+         String result004 = pilish_string("");
+         System.out.println(result004); // ""
+
+         //Задание 8
+         String expression1 = "3 + 5 * (2 - 6)";
+         int result01 = evaluateExpression(expression1);
+         System.out.println(result01); // -17
+
+         String expression2 = "6 – 18 / (-1 + 4)";
+         int result02 = evaluateExpression(expression2);
+         System.out.println(result02); // 0
+
+         //Задание 9
+         String str1 = "aabbcd";
+         System.out.println(isValid(str1)); // NO
+
+         String str2 = "aabbccddeefghi";
+         System.out.println(isValid(str2)); // NO
+
+         String str3 = "abcdefghhgfedecba";
+         System.out.println(isValid(str3)); // YES
+
+         //Задание 10
+         String str01 = "abcd";
+         String str02 = "bd";
+         System.out.println(findLCS(str01, str02)); // bd
+
+         String str03 = "aggtab";
+         String str04 = "gxtxamb";
+         System.out.println(findLCS(str03, str04)); // gtab
+         }
+}
