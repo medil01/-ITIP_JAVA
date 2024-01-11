@@ -1,49 +1,49 @@
- import java.util.*;
+import java.util.*;
 
 public class Task4 {
 
     // Задание 1: Удаление повторяющихся символов в строке
     public static String nonRepeatable(String str) {
-        Set<Character> set = new LinkedHashSet<>();// объект множества "set" хранит только уникальные символы, сохраняя порядок их добавления.
-        for (char c : str.toCharArray()) {// итерация по каждому символу строки "str" с помощью цикла "for-each".
-            set.add(c);//Внутри цикла каждый символ добавляется в множество "set"
+        Set<Character> set = new LinkedHashSet<>();
+        for (char c : str.toCharArray()) {
+            set.add(c);
         }
-        StringBuilder sb = new StringBuilder();//для построения новой строки без повторений.
-        for (char c : set) {//итерация по символам множества "set".
-            sb.append(c);//Каждый символ добавляется в объект StringBuilder "sb" с помощью метода "append
+        StringBuilder sb = new StringBuilder();
+        for (char c : set) {
+            sb.append(c);
         }
-        return sb.toString();//метод возвращает строковое представление объекта StringBuilder с помощью метода "toString"
+        return sb.toString();
     }
 
     // Задание 2: Генерация всех возможных комбинаций скобок
     public static List<String> generateBrackets(int n) {
         List<String> result = new ArrayList<>();
-        backtrack(result, "", 0, 0, n);//Функция backtrack - это вспомогательная рекурсивная функция, которая строит комбинации скобок
+        backtrack(result, "", 0, 0, n);
         return result;
     }
 
     private static void backtrack(List<String> result, String current, int open, int close, int max) {
-        if (current.length() == max * 2) {//Первое условие в функции backtrack проверяет длину текущей комбинации скобок.
-            result.add(current);//Если она равна удвоенному значению max то текущая комбинация добавляется в список result
+        if (current.length() == max * 2) {
+            result.add(current);
             return;
         }
 
-        if (open < max) {//с помощью двух условий if, функция рекурсивно вызывает саму себя, добавляя открывающую скобку "(" или закрывающую скобку ")"
+        if (open < max) {
             backtrack(result, current + "(", open + 1, close, max);
         }
-        if (close < open) {//Условия if ограничивают количество открывающих и закрывающих скобок в комбинации до значения max.
+        if (close < open) {
             backtrack(result, current + ")", open, close + 1, max);
-        }//Рекурсия продолжается, пока не будут перебраны все возможные комбинации скобок.
-    }//в списке result будут содержаться все возможные комбинации скобок заданного количества
+        }
+    }
 
     // Задание 3: Генерация бинарных комбинаций без соседствующих нулей
-    public static List<String> binarySystem(int n) {//В функции binarySystem создается пустой список result, который будет содержать все сгенерированные комбинации.
+    public static List<String> binarySystem(int n) {
         List<String> result = new ArrayList<>();
-        backtrackBinary(result, "", n);//вспомогательная функция backtrackBinary=рекурсивно генерирует комбинации.
+        backtrackBinary(result, "", n);
         return result;
     }
 
-    private static void backtrackBinary(List<String> result, String current, int n) {// проверяется, достигнута ли нужная длина комбинации. Если достигнута, то эта комбинация добавляется в список result.
+    private static void backtrackBinary(List<String> result, String current, int n) {
         if (current.length() == n) {
             result.add(current);
             return;
@@ -52,50 +52,50 @@ public class Task4 {
         backtrackBinary(result, current + "1", n);
         if (current.isEmpty() || current.charAt(current.length() - 1) != '0') {
             backtrackBinary(result, current + "0", n);
-        }//Если длина комбинации не достигнута, то происходит два вызова функции backtrackBinary: один с добавлением символа "1" к текущей комбинации, и второй с добавлением символа "0" к текущей комбинации.
+        }
     }
 
     // Задание 4: Нахождение самой длинной последовательности
     public static String alphabeticRow(String str) {
-        String longestRow = "";//самая длинная последовательность)
-        StringBuilder currentRow = new StringBuilder();//текущая последовательность
-        for (int i = 0; i < str.length() - 1; i++) {// цикл for в строке str, кроме последнего символа
-            currentRow.append(str.charAt(i));//В каждой итерации цикла символ добавляется к currentRow с помощью оператора +=.
-            if (str.charAt(i + 1) - str.charAt(i) != 1) {// является ли следующий символ алфавитным после текущего символа .разница между кодами символов не равна 1= последовательность прервалась.
+        String longestRow = "";
+        StringBuilder currentRow = new StringBuilder();
+        for (int i = 0; i < str.length() - 1; i++) {
+            currentRow.append(str.charAt(i));
+            if (str.charAt(i + 1) - str.charAt(i) != 1) {
                 if (currentRow.length() > longestRow.length()) {
                     longestRow = currentRow.toString();
                 }
-                currentRow = new StringBuilder();// сбрасывается в пустую строку
+                currentRow = new StringBuilder();
             }
         }
-        currentRow.append(str.charAt(str.length() - 1));// последний символ в строке str добавляется к currentRow
-        if (currentRow.length() > longestRow.length()) {// проверяется, является ли currentRow самой длинной последовательностью.
+        currentRow.append(str.charAt(str.length() - 1));
+        if (currentRow.length() > longestRow.length()) {
             longestRow = currentRow.toString();
         }
-        return longestRow;//Возвращается значение longestRow - самая длинная последовательность символов, идущих по алфавиту, в строке str.
+        return longestRow;
     }
 
     // Задание 5: Замена повторяющихся символов числом
     public static String replaceCharsWithCount(String str) {
         StringBuilder result = new StringBuilder();
         int count = 1;
-        for (int i = 0; i < str.length() - 1; i++) {//В for итерируется по каждому символу входной строки, кроме последнего символа
-            if (str.charAt(i) == str.charAt(i + 1)) {//  равен ли текущий символ i следующему символу i + 1
-                count++;// Если они равны, то увеличивается счетчик count
-            } else {//Если символы не равны
-                result.append(str.charAt(i)).append(count);//текущий символ str.charAt(i) и соответствующее количество повторений count добавляются в result
-                count = 1;//count сбрасывается обратно в 1
+        for (int i = 0; i < str.length() - 1; i++) {
+            if (str.charAt(i) == str.charAt(i + 1)) {
+                count++;
+            } else {
+                result.append(str.charAt(i)).append(count);
+                count = 1;
             }
         }
-        result.append(str.charAt(str.length() - 1)).append(count);// последний символ строки и количество повторений count  добавляется в result
-        return result.toString();//результирующая строка, созданная с помощью StringBuilder, преобразуется в обычную строку с помощью метода toString() и возвращается как результат функции.
+        result.append(str.charAt(str.length() - 1)).append(count);
+        return result.toString();
     }
 
     // Задание 6: Преобразование числа в строку
     public static int convertToNum(String str) {
-        Map<String, Integer> numbers = new HashMap<>();//Создание Map объекта с ключами типа String и значениями типа Integer, чтобы хранить соответствия числительных и числовых значений.
-        numbers.put("zero", 0);//Добавление в Map соответствия числительного "zero" и значения 0.
-        numbers.put("one", 1);//Аналогично добавляются соответствия для других числительных от "one" до "hundred" и их числовых значений.
+        Map<String, Integer> numbers = new HashMap<>();
+        numbers.put("zero", 0);
+        numbers.put("one", 1);
         numbers.put("two", 2);
         numbers.put("three", 3);
         numbers.put("four", 4);
@@ -124,110 +124,110 @@ public class Task4 {
         numbers.put("ninety", 90);
         numbers.put("hundred", 100);
 
-        String[] words = str.split(" ");//Разделение строки str на слова по пробелам и сохранение в массиве words.
-        int result = 0;// result используется для накопления итогового числового значения.
-        int currentNumber = 0;//currentNumber будет использоваться для временного хранения текущего числового значения.
-        for (String word : words) {// обработка каждого слова из массива words.
-            if (numbers.containsKey(word)) {//Проверка, содержит ли Map числительное word в качестве ключа.
-                currentNumber += numbers.get(word);//Получение числового значения, соответствующего числительному word из Map и добавление его к currentNumber.
-                if (currentNumber >= 100) {// Проверка, превышает ли currentNumber значение 100.
-                    currentNumber *= numbers.get(word);//Умножение currentNumber на числовое значение word.
-                    currentNumber -= 100;// Вычитание 100 из currentNumber
-                    result += currentNumber;//Добавление currentNumber к result
-                    currentNumber = 0;//Сброс currentNumber до значения 0
+        String[] words = str.split(" ");
+        int result = 0;
+        int currentNumber = 0;
+        for (String word : words) {
+            if (numbers.containsKey(word)) {
+                currentNumber += numbers.get(word);
+                if (currentNumber >= 100) {
+                    currentNumber *= numbers.get(word);
+                    currentNumber -= 100;
+                    result += currentNumber;
+                    currentNumber = 0;
                 }
             }
         }
-        result += currentNumber;//Добавление текущего значения currentNumber к result.
-        return result;//- Возврат итогового результата
+        result += currentNumber;
+        return result;
     }
 
     // Задание 7: Поиск подстроки максимальной длины с уникальными элементами
     public static String uniqueSubstring(String str) {
-        Set<Character> set = new LinkedHashSet<>();//Создание объекта set типа Set<Character> для хранения уникальных символов. LinkedHashSet гарантирует сохранение порядка элементов вставки.
-        StringBuilder result = new StringBuilder();//Создание пустой строки result, которая будет содержать найденную подстроку.
-        for (int i = 0; i < str.length(); i++) {//Начало цикла, который перебирает символы в строке str по индексу
-            char c = str.charAt(i);//Получение символа на позиции i в строке str
-            if (set.contains(c)) {//Проверка, содержит ли set символ c
-                break;//Прерывание цикла, если символ c уже присутствует в set
+        Set<Character> set = new LinkedHashSet<>();
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (set.contains(c)) {
+                break;
             }
-            set.add(c);//Добавление символа c в set, так как он является уникальным
-            result.append(c);//Добавление символа c в result для построения найденной подстроки
+            set.add(c);
+            result.append(c);
         }
-        return result.toString();//Возврат найденной подстроки
+        return result.toString();
     }
 
 
     // Задание 8: Поиск кратчайшего пути в матрице
-    public static int shortestWay(int[][] matrix) {// принимает двумерный массив (matrix) в качестве параметра и возвращает значение int.
-        int n = matrix.length;//  переменная n инициализируется (количеством строк) матрицы
-        int[][] dp = new int[n][n];// создается новый двумерный массив dp размером n на n, который будет использоваться для сохранения результатов вычислений.
-        dp[0][0] = matrix[0][0];//инициализируется первый элемент массива dp значением первого элемента матрицы.
+    public static int shortestWay(int[][] matrix) {
+        int n = matrix.length;
+        int[][] dp = new int[n][n];
+        dp[0][0] = matrix[0][0];
 
-        for (int i = 1; i < n; i++) {//Цикл используется для вычисления значений первого столбца и первой строки массива dp
-            dp[i][0] = dp[i - 1][0] + matrix[i][0];//вычисляется значение эл массива dp по формуле: значение предыдущего элемента в столбце плюс значение текущего элемента матрицы.
-            dp[0][i] = dp[0][i - 1] + matrix[0][i];// вычисляется значение эл массива dp по формуле: значение предыдущего элемента в строке плюс значение текущего элемента матрицы.
+        for (int i = 1; i < n; i++) {
+            dp[i][0] = dp[i - 1][0] + matrix[i][0];
+            dp[0][i] = dp[0][i - 1] + matrix[0][i];
         }
 
-        for (int i = 1; i < n; i++) {// итерации от 1 до n-1 (исключая 0) по строкам матрицы.
-            for (int j = 1; j < n; j++) {//  вложенный цикл,= итерации от 1 до n-1 (исключая 0) по столбцам матрицы
-                dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + matrix[i][j];//вычисляется значение эл массива dp по формуле: выбирается минимум из значения элемента выше (dp[i - 1][j]) и значения элемента слева (dp[i][j - 1]), и к этому минимуму добавляется значение текущего элемента матрицы.
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + matrix[i][j];
             }
         }
 
-        return dp[n - 1][n - 1];//возвращается значение последнего элемента массива dp, которое представляет кратчайший путь в матрице.
+        return dp[n - 1][n - 1];
     }
 
     // Задание 9: Построение строки на основе числового порядка слов
     public static String numericOrder(String str) {
-        String[] words = str.split(" ");// разделяем исходную строку str на отдельные слова и сохраняем их в массив words по пробелу.
-        String[] result = new String[words.length];//новый массив result с размером, равным количеству слов в исходной строке words.
-        for (String word : words) {// for для каждого слова в масиве words.
-            int index = Integer.parseInt(word.replaceAll("[^\\d]", "")) - 1;// слово в число, удаляя все символы, кроме цифр,
-            result[index] = word.replaceAll("\\d", "");//присваем эл массива result  слово по индексу, удаляем все цифры
+        String[] words = str.split(" ");
+        String[] result = new String[words.length];
+        for (String word : words) {
+            int index = Integer.parseInt(word.replaceAll("[^\\d]", "")) - 1;
+            result[index] = word.replaceAll("\\d", "");
         }
         return String.join(" ", result);
     }
 
     // Задание 10: Замена элементов второго числа элементами первого числа
     public static int switchNums(int num1, int num2) {
-        int[] count1 = countDigits(num1);//Создаем массив count1 для подсчета и хранения количества цифр в num1
-        int[] count2 = countDigits(num2);//Создаем массив count2 для подсчета и хранения количества цифр в num2
-        int[] sortedDigits = new int[10];//Создаем массив sortedDigits для сортировки цифр по порядку
-        int resultNumIndex = 0;//Индекс для хранения текущей позиции в массиве sortedDigits
+        int[] count1 = countDigits(num1);
+        int[] count2 = countDigits(num2);
+        int[] sortedDigits = new int[10];
+        int resultNumIndex = 0;
 
-        int resultNum = 0;// Переменная для хранения итогового числа
+        int resultNum = 0;
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < count1[i]; j++) {
-                sortedDigits[resultNumIndex] = i;//Заполняем массив sortedDigits цифрой i (i - текущая цифра)
-                resultNumIndex++;//Увеличиваем индекс для следующей позиции
-                resultNum = resultNum * 10 + i;//Формируем итоговое число, добавляя текущую цифру в конец
+                sortedDigits[resultNumIndex] = i;
+                resultNumIndex++;
+                resultNum = resultNum * 10 + i;
             }
         }
 
-        int switchCount = 0;//Переменная для подсчета количества замен
-        int multiplier = 1;//Множитель для формирования числа при замене цифр
+        int switchCount = 0;
+        int multiplier = 1;
         for (int i = 0; i < 10; i++) {
-            int digit = sortedDigits[i];//Берем следующую цифру из отсортированного массива sortedDigits
+            int digit = sortedDigits[i];
             while (count2[digit] > 0) {
-                count2[digit]--;//Уменьшаем счетчик цифры digit в массиве count2
-                switchCount++;// Увеличиваем счетчик замен
-                resultNum += digit * multiplier;//Заменяем текущую цифру в итоговом числе на digit
-                multiplier *= 10;//Увеличиваем множитель для следующей позиции при замене цифр
+                count2[digit]--;
+                switchCount++;
+                resultNum += digit * multiplier;
+                multiplier *= 10;
             }
         }
 
-        return switchCount == 0 ? -1 : resultNum;//Если не было замен, возвращаем -1, иначе итоговое число
+        return switchCount == 0 ? -1 : resultNum;
     }
 
     private static int[] countDigits(int num) {
-        int[] count = new int[10];//Создаем массив count для подсчета количества цифр в числе
+        int[] count = new int[10];
         while (num > 0) {
-            int digit = num % 10;//Берем последнюю цифру числа
-            count[digit]++;//Увеличиваем счетчик соответствующей цифры
-            num /= 10;// Удаляем последнюю цифру числа
+            int digit = num % 10;
+            count[digit]++;
+            num /= 10;
         }
-        return count;//Возвращаем массив с количеством цифр
+        return count;
     }
 
     public static void main(String[] args) {
