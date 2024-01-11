@@ -22,13 +22,13 @@ public class Task6 {
         // Получаем текущую подстроку
         String substring = formattedSentence.substring(i, i + formattedWord.length());
 
-        // Если подстрока является анаграммой исходного слова, возвращаем ее
+
         if (isAnagram(substring, formattedWord)) {
             return substring;
         }
     }
 
-    // Если анаграмма не найдена, возвращаем "notfound"
+
     return "notfound";
 }
 
@@ -44,13 +44,13 @@ public class Task6 {
     private static List<Character> getCharacterList(String str) {
 
         // Преобразуем строку в список символов и сортируем его
-        List<Character> characters = new ArrayList<>(); // Создаем новый список символов
-        for (char c : str.toCharArray()) { // Преобразуем строку в список символов
+        List<Character> characters = new ArrayList<>();
+        for (char c : str.toCharArray()) {
             characters.add(c);
         }
-        characters.sort(Character::compareTo);// Сортируем список символов по возрастанию
+        characters.sort(Character::compareTo);
 
-        return characters;// Возвращаем отсортированный список символов
+        return characters;
     }
 
     //Задание 2
@@ -58,19 +58,19 @@ public class Task6 {
 
         // Проверяем, достаточна ли длина слова для создания срезов длиной n
         if (word.length() < n) {
-            return new String[0];//Если длина слова меньше n, возвращаем пустой массив
+            return new String[0];
         }
 
         // Вычисляем количество возможных срезов длиной n в данном слове
         int numSlices = word.length() - n + 1;
-        String[] slices = new String[numSlices];// Создаем массив для хранения срезов
+        String[] slices = new String[numSlices];
 
         // Заполняем массив срезами длиной n
         for (int i = 0; i < numSlices; i++) {
             slices[i] = word.substring(i, i + n);
         }
 
-        // Сортируем массив лексикографически  (в алфавитном порядке)
+        // Сортируем массив в алфавитном порядке
         Arrays.sort(slices);
 
         return slices;// Возвращаем отсортированный массив срезов
@@ -97,67 +97,66 @@ public class Task6 {
 
             //Извлекаем символы столбца из сообщения
             for (int j = 0; j < message.length() / numColumns; j++) {
-                int index = numericKey[i-1] - 1;// Вычисляем индекс символа в сообщении на основе цифрового ключа
-                column.append(message.charAt(index));// Добавляем символ в столбец
-                message = message.substring(0, index) + message.substring(index + 1); // Удаляем уже использованный символ из сообщения
+                int index = numericKey[i-1] - 1;
+                column.append(message.charAt(index));
+                message = message.substring(0, index) + message.substring(index + 1);
             }
             columns.add(column.toString());// Добавляем столбец в список столбцов
         }
 
         // Строим закодированное сообщение, объединяя символы из столбцов по порядку
-        StringBuilder encodedMessage = new StringBuilder();// Создаем StringBuilder для хранения закодированного сообщения
-
+        StringBuilder encodedMessage = new StringBuilder();
         // Объединяем символы из столбцов по порядку
         for (int i = 0; i < message.length() / numColumns; i++) {
-            for (String column : columns) {// Перебираем столбцы
-                if (i < column.length()) {// Если текущий индекс меньше длины столбца
-                    encodedMessage.append(column.charAt(i));// Добавляем символ из текущего столбца в закодированное сообщение
+            for (String column : columns) {
+                if (i < column.length()) {
+                    encodedMessage.append(column.charAt(i));
                 } else {
-                    encodedMessage.append(' '); // Добавляем пробел, если достигнут конец столбца
+                    encodedMessage.append(' ');
                 }
             }
         }
 
-        return encodedMessage.toString();// Возвращаем закодированное сообщение
+        return encodedMessage.toString();
     }
 
     private static int[] createNumericKey(String key) {
         // Создаем цифровой ключ, сопоставляя каждой букве позицию в отсортированном ключе
-        int[] numericKey = new int[key.length()];// Создаем массив целых чисел для хранения цифрового ключа
-        char[] sortedKey = key.toCharArray();// Преобразуем ключ в массив символов
-        Arrays.sort(sortedKey);// Сортируем символы ключа по возрастанию
+        int[] numericKey = new int[key.length()];
+        char[] sortedKey = key.toCharArray();
+        Arrays.sort(sortedKey);
 
         // Присваиваем каждой букве позицию в отсортированном ключе
         for (int i = 0; i < key.length(); i++) {
-            char letter = key.charAt(i);// Получаем текущую букву
-            int index = Arrays.binarySearch(sortedKey, letter) + 1;// Ищем позицию буквы в отсортированном ключе
-            numericKey[i] = index;// Присваиваем позицию буквы в цифровом ключе
+            char letter = key.charAt(i);
+            int index = Arrays.binarySearch(sortedKey, letter) + 1;
+            numericKey[i] = index;
         }
-        return numericKey; // Возвращаем цифровой ключ
+        return numericKey;
     }
 
     private static String padMessage(String message, int numColumns) {
 
         // Добавляем пробелы в сообщение, чтобы его длина стала кратной количеству столбцов
-        int remainder = message.length() % numColumns;// Вычисляем остаток от деления длины сообщения на количество столбцов
-        if (remainder != 0) {// Если остаток не равен нулю, то сообщение не кратно количеству столбцов
-            int numSpacesToAdd = numColumns - remainder;// Вычисляем количество пробелов, которые нужно добавить
-            StringBuilder paddedMessage = new StringBuilder(message);// Создаем новый StringBuilder на основе исходного сообщения
+        int remainder = message.length() % numColumns;
+        if (remainder != 0) {
+            int numSpacesToAdd = numColumns - remainder;
+            StringBuilder paddedMessage = new StringBuilder(message);
             for (int i = 0; i < numSpacesToAdd; i++) {
-                paddedMessage.append(' ');// Добавляем пробелы в конец сообщения
+                paddedMessage.append(' ');
             }
-            message = paddedMessage.toString();// Преобразуем StringBuilder обратно в строку
+            message = paddedMessage.toString();
         }
-        return message;// Возвращаем сообщение с добавленными пробелами
+        return message;
     }
 
     //Задание 4
-    public static int[] twoProduct(int[] arr, int n) { // Создание нового объекта типа HashMap для хранения пар чисел
+    public static int[] twoProduct(int[] arr, int n) {
         Map<Integer, Integer> map = new HashMap<>();
-// Итерация по элементам массива arr
+
         for (int i = 0; i < arr.length; i++) {
-            int current = arr[i];// Текущий элемент массива
-            int complement = n / current;// Вычисление дополнения текущего элемента
+            int current = arr[i];
+            int complement = n / current;
 // Проверка, содержит ли map значение, равное дополнению
             if (map.containsKey(complement)) {
                 int complementIndex = map.get(complement);// Индекс элемента с дополнением
@@ -171,10 +170,10 @@ public class Task6 {
     }
 
     //Задание 5
-    public static int[] isExact(int n) {// Создание массива result с исходными значениями n и 0
+    public static int[] isExact(int n) {
         int[] result = {n, 0};
         // Проверка, является ли n нулем или единицей
-        if (n == 0 || n == 1) { // Если n равно 0 или 1, то факториал равен 1
+        if (n == 0 || n == 1) {
 
             // Факториал 0 и 1 равен 1
             result[1] = 1;
@@ -182,32 +181,32 @@ public class Task6 {
         }
 
         int factorial = 1;// Переменная для хранения значения факториала
-        int i = 2;// Переменная для итерации
-        // Пока факториал меньше n, увеличиваем его, увеличивая i
+        int i = 2;
+
         while (factorial < n) {
             factorial *= i;
             i++;
         }
 
-        // Проверяем, равен ли факториал n
+
         if (factorial == n) {
-            result[1] = i - 1;// Записываем значение i - 1 в result[1]
+            result[1] = i - 1;
             return result;
         }
 
-        return new int[]{};// Возвращаем пустой массив, если факториал не равен n
+        return new int[]{};
     }
 
     //Задание 6
     public static String fractions(String decimal) {
         // Ищем повторяющийся блок в десятичной дроби
-        String pattern = "\\((\\d+)";// Шаблон для поиска повторяющегося блока
-        Pattern r = Pattern.compile(pattern); // Создаем объект Pattern
-        Matcher m = r.matcher(decimal);// Создаем объект Matcher и ищем совпадения в десятичной дроби
+        String pattern = "\\((\\d+)";
+        Pattern r = Pattern.compile(pattern); 
+        Matcher m = r.matcher(decimal);
         String repeatingPart = "";
 
         if (m.find()) {
-            repeatingPart = m.group(1);// Получаем повторяющийся блок
+            repeatingPart = m.group(1);
         }
 
         // Определяем количество цифр в повторяющемся блоке
@@ -222,11 +221,11 @@ public class Task6 {
         int denominator = (int) (Math.pow(10, fractionPart.length()) - Math.pow(10, fractionPart.length() - repeatingPartLength));
 
         // Упрощаем дробь
-        int gcd = greatestCommonDivisor(numerator, denominator);// Находим наибольший общий делитель
-        numerator /= gcd; // Делим числитель на НОД
-        denominator /= gcd; // Делим знаменатель на НОД
+        int gcd = greatestCommonDivisor(numerator, denominator);
+        numerator /= gcd;
+        denominator /= gcd;
 
-        return numerator + "/" + denominator;// Возвращаем дробь в формате "числитель/знаменатель"
+        return numerator + "/" + denominator;
     }
 
     // Вспомогательный метод для нахождения наибольшего общего делителя
@@ -248,7 +247,7 @@ public class Task6 {
         // Получаем цифры числа Пи
         String piDigits = "314159265358979";
 
-        StringBuilder result = new StringBuilder();// Результирующая строка
+        StringBuilder result = new StringBuilder();
         int index = 0;// Индекс для прохода по txt
 
 
@@ -307,15 +306,13 @@ public class Task6 {
                     operands.push(num);
 
                     // Уменьшаем индекс, чтобы скорректировать его на 1,
-                    // т.к. он будет увеличен в конце цикла
+
                     i--;
                 } else if (ch == '(') {
-                    // Если текущий символ - открывающая скобка,
-                    // добавляем ее в стек операций
+
                     operators.push(ch);
                 } else if (ch == ')') {
-                    // Если текущий символ - закрывающая скобка,
-                    // выполняем операции до открывающей скобки
+
                     while (!operators.isEmpty() && operators.peek() != '(') {
                         performOperation(operands, operators);
                     }
@@ -323,9 +320,7 @@ public class Task6 {
                     // Удаляем открывающую скобку
                     operators.pop();
                 } else if (isOperator(ch)) {
-                    // Если текущий символ - оператор
-                    // и его приоритет ниже или равен приоритету последнего оператора
-                    // в стеке операций, выполняем последнюю операцию
+
                     while (!operators.isEmpty() && operators.peek() != '(' && hasLowerOrEqualPriority(ch, operators.peek())) {
                         performOperation(operands, operators);
                     }
@@ -345,7 +340,7 @@ public class Task6 {
         } catch (Exception e) {
             // Обрабатываем ошибку
             System.out.println("Ошибка вычисления выражения: " + e.getMessage());
-            return 0; // Или любое другое значение, которое указывает на ошибку
+            return 0;
         }
     }
 
@@ -414,11 +409,10 @@ public class Task6 {
 
         // Определяем, является ли строка действительной
         if (distinctFrequencies == 1) {
-            // Если все символы имеют одинаковую частоту
+
             return "YES";
         } else if (distinctFrequencies == 2) {
-            // Если две разные частоты и разница между ними равна 1,
-            // то можно удалить один символ и сделать строку действительной
+
             int countMinFrequency = 0;
             int countMaxFrequency = 0;
 
