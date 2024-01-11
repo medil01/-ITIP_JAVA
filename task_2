@@ -1,0 +1,191 @@
+public class Task02 {public class Main {
+
+    public static void main(String[] args) {
+        // Задание 1
+        System.out.println(duplicateChars("Donald"));
+        System.out.println(duplicateChars("orange"));
+
+        // Задание 2
+        System.out.println(getInitials("Ryan Gosling"));
+        System.out.println(getInitials("Barack Obama"));
+
+        // Задание 3
+        System.out.println(differenceEvenOdd(new int[]{44, 32, 86, 19}));
+        System.out.println(differenceEvenOdd(new int[]{22, 50, 16, 63, 31, 55}));
+
+        // Задание 4
+        System.out.println(equalToAvg(new int[]{1, 2, 3, 4, 5}));
+        System.out.println(equalToAvg(new int[]{1, 2, 3, 4, 6}));
+
+        // Задание 5
+        int[] multiplied = indexMult(new int[]{1, 2, 3});
+        for (int num : multiplied) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
+
+        multiplied = indexMult(new int[]{3, 3, -2, 408, 3, 31});
+        for (int num : multiplied) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
+
+        // Задание 6
+        System.out.println(reverse("Hello World"));
+        System.out.println(reverse("The quick brown fox."));
+
+        // Задание 7
+        System.out.println(Tribonacci(7));
+        System.out.println(Tribonacci(11));
+
+        // Задание 8
+        System.out.println(pseudoHash(5));
+        System.out.println(pseudoHash(10));
+        System.out.println(pseudoHash(0));
+
+        // Задание 9
+        System.out.println(botHelper("Hello, I’m under the water, please help me"));
+        System.out.println(botHelper("Two pepperoni pizzas please"));
+
+        // Задание 10
+        System.out.println(isAnagram("listen", "silent"));
+        System.out.println(isAnagram("eleven plus two", "twelve plus one"));
+        System.out.println(isAnagram("hello", "world"));
+    }
+
+    // Задание 1
+    public static boolean duplicateChars(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            char currentChar = str.charAt(i);
+            for (int j = i + 1; j < str.length(); j++) {
+                if (currentChar == str.charAt(j)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // Задание 2
+    public static String getInitials(String fullName) {
+        String[] names = fullName.split(" ");
+        StringBuilder initials = new StringBuilder();
+        for (String name : names) {
+            initials.append(name.charAt(0));
+        }
+        return initials.toString();
+    }
+
+    // Задание 3
+    public static int differenceEvenOdd(int[] arr) {
+        int sumEven = 0;
+        int sumOdd = 0;
+        for (int num : arr) {
+            if (num % 2 == 0) {
+                sumEven += num;
+            } else {
+                sumOdd += num;
+            }
+        }
+        return sumEven - sumOdd;
+    }
+
+    // Задание 4
+    public static boolean equalToAvg(int[] arr) {
+        int sum = 0;
+        for (int num : arr) {
+            sum += num;
+        }
+        float average = (float) sum / arr.length;
+        for (int num : arr) {
+            if (num == average) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Задание 5
+    public static int[] indexMult(int[] arr) {
+        int[] multiplied = new int[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            multiplied[i] = arr[i] * i;
+        }
+        return multiplied;
+    }
+
+    // Задание 6
+    public static String reverse(String str) {
+        StringBuilder reversed = new StringBuilder();
+        for (int i = str.length() - 1; i >= 0; i--) {
+            reversed.append(str.charAt(i));
+        }
+        return reversed.toString();
+    }
+
+    // Задание 7
+    public static int Tribonacci(int n) {
+        if (n == 0 || n == 1) {
+            return 0;
+        } else if (n == 2) {
+            return 1;
+        }
+        int[] sequence = new int[n + 1];
+        sequence[0] = 0;
+        sequence[1] = 0;
+        sequence[2] = 1;
+        for (int i = 3; i <= n; i++) {
+            sequence[i] = sequence[i - 1] + sequence[i - 2] + sequence[i - 3];
+        }
+        return sequence[n];
+    }
+
+    // Задание 8
+    public static String pseudoHash(int length) {
+        if (length <= 0) {
+            return "";
+        }
+        StringBuilder hash = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int randomDigit = (int) (Math.random() * 16);
+            char digit = (char) (randomDigit < 10 ? '0' + randomDigit : 'a' + (randomDigit - 10));
+            hash.append(digit);
+        }
+        return hash.toString();
+    }
+
+    // Задание 9
+    public static String botHelper(String transcript) {
+        if (transcript.toLowerCase().contains("help")) {
+            return "Calling for a staff member";
+        } else {
+            return "Keep waiting";
+        }
+    }
+
+    // Задание 10
+    public static boolean isAnagram(String str1, String str2) {
+        str1 = str1.replaceAll("\\s", "").toLowerCase();
+        str2 = str2.replaceAll("\\s", "").toLowerCase();
+
+        if (str1.length() != str2.length()) {
+            return false;
+        }
+
+        int[] count = new int[26];
+
+        for (int i = 0; i < str1.length(); i++) {
+            count[str1.charAt(i) - 'a']++;
+            count[str2.charAt(i) - 'a']--;
+        }
+
+        for (int i = 0; i < count.length; i++) {
+            if (count[i] != 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+}
