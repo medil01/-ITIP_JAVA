@@ -1,0 +1,20 @@
+package org.landsreyk;
+
+import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
+
+@DataProcessor
+public class FilterProcessor implements Processor {
+    public static LinkedBlockingDeque<List<String>> inputQueue = new LinkedBlockingDeque<>();
+
+    @DataProcessor
+    public void filter() throws InterruptedException {
+        while (!AggregateProcessor.completed || !inputQueue.isEmpty()) {
+            System.out.println("FILTER BEGIN");
+            var item = inputQueue.take();
+            var result = item.stream().filter(x -> x.length() < 10).toList();
+            TransformProcessor.inputQueue.put(result);
+            System.out.println("FILTER END");
+        }
+    }
+}
