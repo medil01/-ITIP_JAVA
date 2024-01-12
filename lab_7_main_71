@@ -1,0 +1,34 @@
+public class Main_71 {
+    private static int[] array = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    private static int result = 0;
+
+    public static void main(String[] args) {
+        Thread thread1 = new Thread(() -> {
+            int sum = 0;
+            for (int i = 0; i < array.length / 2; i++) {
+                sum += array[i];
+            }
+            result += sum;
+        });
+
+        Thread thread2 = new Thread(() -> {
+            int sum = 0;
+            for (int i = array.length / 2; i < array.length; i++) {
+                sum += array[i];
+            }
+            result += sum;
+        });
+
+        thread1.start();
+        thread2.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Сумма элементов массива: " + result);
+    }
+}
