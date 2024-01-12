@@ -1,0 +1,142 @@
+import java.util.*;
+
+abstract class Employee {
+    private String name;
+    private int age;
+    private double salary;
+    //
+    private static int objectCount = 0;
+    public Employee(String name, int age, double salary) {
+        this.name = name;
+        this.age = age;
+        this.salary = salary;
+        objectCount++;
+        //
+    }
+
+    public abstract void work();
+
+    public static int getObjectCount() {
+        return objectCount;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + name + ", Age: " + age + ", Salary: " + salary;
+    }
+}
+
+class Administrator extends Employee {
+
+    private String department;
+
+    public Administrator(String name, int age, double salary, String department) {
+        super(name, age, salary);
+        this.department = department;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    @Override
+    public void work() {
+        System.out.println("I am an administrator and I manage the " + department + " department.");
+    }
+}
+
+class Programmer extends Employee {
+    private String programmingLanguage;
+
+    public Programmer(String name, int age, double salary, String programmingLanguage) {
+        super(name, age, salary);
+        this.programmingLanguage = programmingLanguage;
+    }
+
+    public String getProgrammingLanguage() {
+        return programmingLanguage;
+    }
+
+    public void setProgrammingLanguage(String programmingLanguage) {
+        this.programmingLanguage = programmingLanguage;
+    }
+
+    @Override
+    public void work() {
+        System.out.println("I am a programmer and I code in " + programmingLanguage + ".");
+    }
+}
+
+class Manager extends Employee {
+    private List<String> projects;
+
+    public Manager(String name, int age, double salary, List<String> projects) {
+        super(name, age, salary);
+        this.projects = projects;
+    }
+
+    public List<String> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<String> projects) {
+        this.projects = projects;
+    }
+
+    @Override
+    public void work() {
+        System.out.println("I am a manager and I oversee the following projects:");
+        for (String project : projects) {
+            System.out.println(project);
+        }
+    }
+}
+
+public class Hierarchy {
+    public static void main(String[] args) {
+        List<String> projects = new ArrayList<>();
+        projects.add("Project A");
+        projects.add("Project B");
+
+        Administrator admin = new Administrator("John Doe", 30, 50000, "Finance");
+        Programmer programmer = new Programmer("Jane Smith", 25, 60000, "Java");
+        Manager manager = new Manager("David Johnson", 35, 70000, projects);
+
+        admin.work();
+        programmer.work();
+        manager.work();
+
+        System.out.println(admin);
+        System.out.println(programmer);
+        System.out.println(manager);
+
+
+        System.out.println("Number of manager objects created: " + Manager.getObjectCount());
+    }
