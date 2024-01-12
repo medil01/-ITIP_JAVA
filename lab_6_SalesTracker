@@ -1,0 +1,105 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class SalesTracker {
+
+
+    private List<Product> soldProducts;
+
+
+    public SalesTracker() {
+        soldProducts = new ArrayList<>();
+    }
+
+
+    public void addSale(Product product) {//Метод addSale используется для добавления продажи товара в список soldProducts
+        soldProducts.add(product);
+    }
+
+
+    public void printSales() {
+        for (Product product : soldProducts) {
+            System.out.println(product.getName() + " - " + product.getPrice());
+        }
+    }
+
+
+    public double getTotalSales() {
+        double totalSales = 0;
+        for (Product product : soldProducts) {
+            totalSales += product.getPrice();
+        }
+        return totalSales;
+    }
+
+
+    public String getMostPopularProduct() {
+        Map<String, Integer> productCountMap = new HashMap<>();
+        String mostPopularProduct = null;
+        int maxCount = 0;
+
+        for (Product product : soldProducts) {
+            String productName = product.getName();
+            int count = productCountMap.getOrDefault(productName, 0) + 1;
+            productCountMap.put(productName, count);
+
+            if (count > maxCount) {
+                mostPopularProduct = productName;
+                maxCount = count;
+            }
+        }
+
+        return mostPopularProduct;
+    }
+
+
+    public static void main(String[] args) {
+        SalesTracker salesTracker = new SalesTracker();
+
+
+        salesTracker.addSale(new Product("Телефон", 1000));
+        salesTracker.addSale(new Product("Ноутбук", 2000));
+        salesTracker.addSale(new Product("Телевизор", 1500));
+        salesTracker.addSale(new Product("Телефон", 1000));
+
+
+        System.out.println("Список проданных товаров:");
+        salesTracker.printSales();
+
+
+        double totalSales = salesTracker.getTotalSales();
+        System.out.println("Общая сумма продаж: " + totalSales);
+
+
+        String mostPopularProduct = salesTracker.getMostPopularProduct();
+        System.out.println("Наиболее популярный товар: " + mostPopularProduct);
+    }
+
+
+    private static class Product {
+        private String name;
+        private double price;
+
+
+
+
+
+
+
+        public Product(String name, double price) {
+            this.name = name;
+            this.price = price;
+        }
+
+
+        public String getName() {
+            return name;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+    }
+}
