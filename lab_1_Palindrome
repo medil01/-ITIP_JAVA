@@ -1,0 +1,31 @@
+ public class Palindrome {
+    public static void main(String[] args) {
+                         String[] var1 = args; // Сохраняем аргументы командной строки в массив var1
+                         int var2 = args.length; // Определяем длину массива аргументов
+
+                         for(int var3 = 0; var3 < var2; ++var3) { // Цикл для перебора всех аргументов
+                                 String s = var1[var3]; // Сохраняем текущий аргумент в переменную s
+                                 if (isPalindrome(s)) { // Если строка является палиндромом
+                                         System.out.println(s + " is a palindrome"); // Выводим сообщение, что строка является палиндромом
+                                 } else {
+                                         System.out.println(s + " is not a palindrome"); // Выводим сообщение, что строка не является палиндромом
+                                 }
+                         }
+
+                 }
+
+                 public static boolean isPalindrome(String s) {
+                         String reversed = reverseString(s); // Получаем обратную строку
+                         return s.equals(reversed); // Возвращаем результат сравнения исходной и обратной строк
+                 }
+
+                 public static String reverseString(String s) {
+                         StringBuilder reversed = new StringBuilder(); // Создаем объект StringBuilder для сохранения обратной строки
+
+                         for(int i = s.length() - 1; i >= 0; --i) { // Цикл для перебора символов строки в обратном порядке
+                                 reversed.append(s.charAt(i)); // Добавляем символы строки в обратном порядке к объекту StringBuilder
+                         }
+
+                         return reversed.toString(); // Возвращаем строковое представление обратной строки
+                 }
+         }
