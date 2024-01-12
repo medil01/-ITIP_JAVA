@@ -1,0 +1,29 @@
+package org.landsreyk;
+
+public class App {
+
+
+    public static final String SOURCE_1 = "src/main/resources/data.txt";
+    public static final String SOURCE_2 = "src/main/resources/data2.txt";
+    public static final String DESTINATION = "src/main/resources/result.txt";
+
+
+    public static void main(String[] args) throws Exception {
+
+        // Регистрируем обработчики данных
+        DataManager.registerDataProcessor(new FilterProcessor());
+        DataManager.registerDataProcessor(new TransformProcessor());
+        DataManager.registerDataProcessor(new AggregateProcessor());
+
+        // Загружаем данные из файла
+        DataManager.loadData(SOURCE_1);
+        DataManager.loadData(SOURCE_2);
+
+        // Запускаем многопоточную обработку данных
+        DataManager.processData();
+
+        // Сохраняем обработанные данные в новый файл
+        DataManager.saveData(DESTINATION);
+    }
+
+}
