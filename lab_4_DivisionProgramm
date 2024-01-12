@@ -1,0 +1,33 @@
+public class DivisionProgram {
+    public static void main(String[] args) {
+        try {
+
+            age(0);
+            age(120);
+        } catch (CustomAgeException e) {
+            System.out.println("Значение не удовлетворяет условию.");
+        }
+    }
+
+    public static void age(int ageOfPerson) throws CustomAgeException {
+        if (ageOfPerson < 0) {
+            throw new CustomAgeException(ageOfPerson);
+        } else if (ageOfPerson > 120) {
+            throw new CustomAgeException(ageOfPerson);
+        }
+        System.out.println(ageOfPerson);
+    }
+}
+
+class CustomAgeException extends Exception {
+    CustomAgeException(int age) {
+
+
+        if (age < 0) {
+            System.out.println(age + " < " + 0);
+        } else if (age > 120) {
+            System.out.println(age + " > " + 0); 
+        }
+    }
+}
+
