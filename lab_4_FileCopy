@@ -6,22 +6,22 @@ public class FileCopy {
             String sourceFilePath = "путь_к_исходному_файлу";
             String destinationFilePath = "путь_к_файлу_назначения";
 
-            // Открытие исходного файла для чтения
+            
             FileInputStream sourceFile = new FileInputStream(sourceFilePath);
             
 
-            // Открытие файла назначения для записи
+            
             FileOutputStream destinationFile = new FileOutputStream(destinationFilePath);
-            // Буфер для чтения и записи данных
+            
             byte[] buffer = new byte[1024];
             int length;
 
-            // Чтение данных из исходного файла и запись их в файл назначения
+            
             while ((length = sourceFile.read(buffer)) > 0) {
                  destinationFile.write(buffer, 0, length);
             }
            
-            // Закрытие файлов
+           
             sourceFile.close();
             destinationFile.close();
 
