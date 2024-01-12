@@ -1,0 +1,103 @@
+import java.util.Random;
+
+
+public class MatrixMaxElement {
+
+    private static final int MATRIX_SIZE = 10;
+
+    private static final int MAX_VALUE = 100;
+
+    public static void main(String[] args) {
+
+        int[][] matrix = generateMatrix(MATRIX_SIZE, MATRIX_SIZE);
+
+        printMatrix(matrix);
+
+
+        Thread[] threads = new Thread[MATRIX_SIZE];
+        MaxFinderRunnable[] runnables = new MaxFinderRunnable[MATRIX_SIZE];
+
+
+        for (int i = 0; i < MATRIX_SIZE; i++) {
+            runnables[i] = new MaxFinderRunnable(matrix[i]);
+            threads[i] = new Thread(runnables[i]);
+            threads[i].start();
+        }
+
+
+        try {
+            for (int i = 0; i < MATRIX_SIZE; i++) {
+                threads[i].join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        int maxElement = Integer.MIN_VALUE;
+        for (MaxFinderRunnable runnable : runnables) {
+            int threadMax = runnable.getMax();
+            maxElement = Math.max(maxElement, threadMax);
+        }
+
+
+        System.out.println("Наибольший элемент: " + maxElement);
+    }
+
+
+    private static int[][] generateMatrix(int rows, int cols) {
+
+        Random random = new Random();
+
+        int[][] matrix = new int[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                matrix[i][j] = random.nextInt(MAX_VALUE);
+            }
+        }
+
+        return matrix;
+    }
+
+
+    private static void printMatrix(int[][] matrix) {
+
+        System.out.println("Матрица:");
+
+        for (int[] row : matrix) {
+            for (int element : row) {
+                System.out.print(element + " ");
+            }
+            System.out.println();
+        }
+    }
+
+
+    private static class MaxFinderRunnable implements Runnable {
+        private int[] row;
+        private int max;
+
+
+        public MaxFinderRunnable(int[] row) {
+            this.row = row;
+            this.max = Integer.MIN_VALUE;
+        }
+
+
+        @Override
+        public void run() {
+
+            for (int element : row) {
+                if (element > max) {
+                    max = element;
+                }
+            }
+        }
+
+
+        public int getMax() {
+            return max;
+        }
+    }
+}
