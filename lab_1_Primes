@@ -1,0 +1,24 @@
+public class Primes {
+    public static void main(String[] args) {
+        for (int i = 1; i <= 100; ++i) { // цикл от 1 до 100
+            if (isPrime(i)) { // если число простое
+                System.out.print("" + i + " "); // выводим число на экран
+            }
+        }
+
+    }
+
+    public static boolean isPrime(int n) { // Проверка на простоту числа
+        if (n <= 1) {// Если число меньше или равно 1
+            return false; // число не является простым
+        } else {
+            for (int i = 2; (double) i <= Math.sqrt((double) n); ++i) { // цикл от 2 до корня из числа n
+                if (n % i == 0) {// Если число делится без остатка на другое число
+                    return false; // число не является простым
+                }
+            }
+
+            return true;  // Число является простым
+        }
+    }
+}
