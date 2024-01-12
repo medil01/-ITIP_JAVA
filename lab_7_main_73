@@ -1,0 +1,98 @@
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Main_73
+{
+    public static List<Item> items;
+    public static Sklad sklad1 = new Sklad();
+    public static boolean isEnd = false;
+    public static class Item
+    {
+        public int weigth;
+
+        public Item (int w)
+        {
+            weigth = w;
+        }
+    }
+
+    public static class Sklad
+    {
+        public int Mas;
+    }
+
+    public static class Gruzchik
+    {
+        public int temp_weigth;
+    }
+
+    public static class MyRunnalable implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            if (!items.isEmpty())
+            {
+                int weigth = items.get(0).weigth;
+                sklad1.Mas += weigth;
+                items.remove(0);
+                if (sklad1.Mas >= 150)
+                {
+                    isEnd = true;
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args)
+    {
+        items = new ArrayList<>();
+        items.add(new Item(149));
+        items.add(new Item(50));
+        items.add(new Item(20));
+        items.add(new Item(5));
+        items.add(new Item(45));
+        //------------------------
+        items.add(new Item(30));
+
+        Gruzchik g1 = new Gruzchik();
+        Gruzchik g2 = new Gruzchik();
+        Gruzchik g3 = new Gruzchik();
+
+        while (!isEnd)
+        {
+            Thread t1 = new Thread(new MyRunnalable());
+            Thread t2 = new Thread(new MyRunnalable());
+            Thread t3 = new Thread(new MyRunnalable());
+
+            try
+            {
+                g1.temp_weigth = items.get(0).weigth;
+                t1.start();
+                t1.join();
+                if (isEnd)
+                    break;
+
+                g2.temp_weigth = items.get(0).weigth;
+                if (g1.temp_weigth + g2.temp_weigth >= 150)
+                    continue;
+                t2.start();
+                t2.join();
+                if (isEnd)
+                    break;
+
+                g3.temp_weigth = items.get(0).weigth;
+                if (g1.temp_weigth + g2.temp_weigth + g3.temp_weigth >= 150)
+                    continue;
+                t3.start();
+                t3.join();
+            }
+            catch (Exception e)
+            { }
+        }
+
+        System.out.println(sklad1.Mas);
+        System.out.println(items.size());
+    }
+}
