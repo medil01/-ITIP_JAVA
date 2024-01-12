@@ -1,0 +1,27 @@
+package org.landsreyk;
+
+import lombok.Getter;
+
+
+import java.util.Arrays;
+import java.util.concurrent.LinkedBlockingDeque;
+
+@Getter
+@DataProcessor
+public class AggregateProcessor implements Processor {
+    public static boolean completed = false;
+    public static LinkedBlockingDeque<String> inputQueue = new LinkedBlockingDeque<>();
+
+    @DataProcessor
+    public void aggregate() throws InterruptedException {
+        while (!inputQueue.isEmpty())
+        {
+            System.out.println("AGGREGATE BEGIN");
+            var item = inputQueue.take();
+            var result = Arrays.stream(item.split("\\s+")).toList();
+            FilterProcessor.inputQueue.put(result);
+            System.out.println("AGGREGATE END");
+        }
+        completed = true;
+    }
+}
