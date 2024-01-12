@@ -1,0 +1,60 @@
+package org.landsreyk;
+
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+public class DataManager {
+    private static final List<Processor> processors = new ArrayList<>();
+
+    public static void registerDataProcessor(Object processor) {
+        if (!processor.getClass().isAnnotationPresent(DataProcessor.class)) {
+            throw new IllegalArgumentException("Object is not annotated with @DataProcessor");
+        }
+        processors.add((Processor) processor);
+    }
+
+    public static void loadData(String source) throws Exception {
+        var data = Files.readString(Paths.get(source));
+        AggregateProcessor.inputQueue.put(data);
+    }
+
+    public static void processData() throws InterruptedException {
+        ExecutorService executor = Executors.newFixedThreadPool(processors.size());
+        for (Processor processor : processors) {
+            Runnable task = () ->
+            {
+                for (Method method : processor.getClass().getDeclaredMethods()) {
+                    if (method.isAnnotationPresent(DataProcessor.class)) {
+                        try {
+                            method.invoke(processor);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            };
+            executor.execute(task);
+        }
+        executor.shutdown();
+        boolean isTerminated = executor.awaitTermination(1, TimeUnit.MINUTES);
+        if (!isTerminated) {
+            throw new RuntimeException("Could not finish tasks.");
+        }
+    }
+
+    public static void saveData(String destination) throws IOException {
+        Files.deleteIfExists(Paths.get(destination));
+        Files.createFile(Paths.get(destination));
+        for (List<String> line : TransformProcessor.outputQueue) {
+            Files.writeString(Paths.get(destination), line.toString() + "\n", StandardOpenOption.APPEND);
+        }
+    }
+}
