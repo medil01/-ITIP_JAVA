@@ -1,0 +1,46 @@
+import java.util.regex.*;
+
+public class lab_5 {
+    public static void main(String[] args) {
+        // Задание 1: Поиск всех чисел в тексте
+        String text = "The price of the product is $19.99";
+        Pattern pattern1 = Pattern.compile("-?\\d+\\.\\d+");
+        Matcher matcher1 = pattern1.matcher(text);
+        while (matcher1.find()) {
+            System.out.println(matcher1.group());
+        }
+
+        // Задание 2: Проверка корректности ввода пароля
+        String password = "Abcd1234";
+        Pattern pattern2 = Pattern.compile("^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,16}$");
+        Matcher matcher2 = pattern2.matcher(password);
+        if (matcher2.matches()) {
+            System.out.println("Пароль корректный");
+        } else {
+            System.out.println("Пароль некорректный");
+        }
+
+        // Задание 3: Замена всех ссылок на гиперссылки
+        String textWithLinks = "Visit my website at http://www.example.com";
+        String replacedText = textWithLinks.replaceAll("\\b(http(s)?://\\S+)", "<a href=\"$0\">$0</a>");
+        System.out.println(replacedText);
+
+        // Задание 4: Проверка корректности ввода IP-адреса
+        String ipAddress = "192.168.000.1";
+        Pattern pattern3 = Pattern.compile("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$");
+        Matcher matcher3 = pattern3.matcher(ipAddress);
+        if (matcher3.matches()) {
+            System.out.println("IP-адрес корректный");        } else {
+            System.out.println("IP-адрес некорректный");
+        }
+
+        // Задание 5: Поиск всех слов, начинающихся с заданной буквы
+        String letter = "a";
+        String textWithWords = "Hello, world! Java is awesome.";
+        Pattern pattern4 = Pattern.compile("\\b" + letter + "\\w*");
+        Matcher matcher4 = pattern4.matcher(textWithWords);
+        while (matcher4.find()) {
+            System.out.println(matcher4.group());
+        }
+    }
+}
