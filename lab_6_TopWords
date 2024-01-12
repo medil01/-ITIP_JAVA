@@ -1,0 +1,52 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
+
+public class TopWords {
+    public static void main(String[] args) {
+
+        String filePath = "D:\\text.txt";
+
+
+        File file = new File(filePath);
+
+
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        Map<String, Integer> wordCountMap = new HashMap<>();
+
+
+        while (scanner.hasNext()) {
+            String word = scanner.next();
+            int count = wordCountMap.getOrDefault(word, 0);
+            wordCountMap.put(word, count + 1);
+        }
+
+
+        scanner.close();
+
+
+        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(wordCountMap.entrySet());
+
+
+        Collections.sort(entryList, new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                return Integer.compare(o2.getValue(), o1.getValue());
+            }
+        });
+
+
+        int topCount = Math.min(10, entryList.size());
+        for (int i = 0; i < topCount; i++) {
+            Map.Entry<String, Integer> entry = entryList.get(i);
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+}
