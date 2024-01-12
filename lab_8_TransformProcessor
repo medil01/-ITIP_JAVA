@@ -1,0 +1,21 @@
+package org.landsreyk;
+
+import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
+
+@DataProcessor
+public class TransformProcessor implements Processor {
+    public static LinkedBlockingDeque<List<String>> inputQueue = new LinkedBlockingDeque<>();
+    public static LinkedBlockingDeque<List<String>> outputQueue = new LinkedBlockingDeque<>();
+
+    @DataProcessor
+    public void transform() throws InterruptedException {
+        while (!AggregateProcessor.completed || !inputQueue.isEmpty()) {
+            System.out.println("TRANSFORM BEGIN");
+            var item = inputQueue.take();
+            var result = item.stream().map(String::length).map(Object::toString).toList();
+            outputQueue.put(result);
+            System.out.println("TRANSFORM END");
+        }
+    }
+}
